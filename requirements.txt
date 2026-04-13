@@ -1,6 +1,6 @@
 PySide6>=6.6.0
 fastapi>=0.110.0
 uvicorn>=0.29.0
-hid>=1.0.6
+hidapi>=0.14.0
 pyserial>=3.5
 python-dotenv>=1.0.0

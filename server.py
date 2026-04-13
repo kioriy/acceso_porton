@@ -22,6 +22,7 @@ from typing import Optional
 import uvicorn
 from fastapi import FastAPI, HTTPException, Header, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import Response
 from pydantic import BaseModel
 
 import config
@@ -62,9 +63,30 @@ app = FastAPI(title="Acceso Portón", version="1.0.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_methods=["POST", "GET"],
+    allow_methods=["POST", "GET", "OPTIONS"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def private_network_access(request: Request, call_next):
+    """Responde al preflight de Chrome Private Network Access."""
+    if (
+        request.method == "OPTIONS"
+        and request.headers.get("Access-Control-Request-Private-Network") == "true"
+    ):
+        return Response(
+            status_code=204,
+            headers={
+                "Access-Control-Allow-Origin": request.headers.get("Origin", "*"),
+                "Access-Control-Allow-Private-Network": "true",
+                "Access-Control-Allow-Headers": "*",
+                "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+            },
+        )
+    response = await call_next(request)
+    response.headers["Access-Control-Allow-Private-Network"] = "true"
+    return response
 
 
 def _check_api_key(x_api_key: Optional[str]):
