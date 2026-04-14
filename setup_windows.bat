@@ -55,13 +55,33 @@ if errorlevel 1 (
     pause
     exit /b 1
 )
-mkcert localhost 127.0.0.1
+
+:: Obtener IP local automaticamente
+for /f "tokens=2 delims=:" %%a in ('ipconfig ^| findstr /R "IPv4.*192\."') do (
+    set "LOCAL_IP=%%a"
+    set "LOCAL_IP=!LOCAL_IP: =!"
+)
+if not defined LOCAL_IP (
+    for /f "tokens=2 delims=:" %%a in ('ipconfig ^| findstr "IPv4"') do (
+        set "LOCAL_IP=%%a"
+        set "LOCAL_IP=!LOCAL_IP: =!"
+    )
+)
+echo [INFO] IP local detectada: !LOCAL_IP!
+
+mkcert localhost 127.0.0.1 !LOCAL_IP!
 if errorlevel 1 (
     echo [ERROR] Fallo la generacion del certificado.
     pause
     exit /b 1
 )
-echo [OK] Certificados generados: localhost+1.pem y localhost+1-key.pem
+echo [OK] Certificados generados para localhost, 127.0.0.1 y !LOCAL_IP!
+
+:: Actualizar SERVER_IP en .env si existe
+if exist .env (
+    powershell -Command "(Get-Content .env) -replace '^SERVER_IP=.*', 'SERVER_IP=!LOCAL_IP!' | Set-Content .env"
+    echo [OK] SERVER_IP actualizada en .env: !LOCAL_IP!
+)
 
 :skip_mkcert
 
