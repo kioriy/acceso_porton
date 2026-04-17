@@ -27,10 +27,11 @@ _HID_CMD_ON  = lambda ch: bytes([0xFF, ch, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
 _HID_CMD_OFF = lambda ch: bytes([0xFD, ch, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
 
 # ---------------------------------------------------------------------------
-# Comandos Serial (protocolo común CH340 relay modules)
+# Comandos Serial — protocolo AT (DSD TECH SH-UR01A con CP2102)
+# Formato: AT+CH<n>=<1|0>\r\n   Respuesta: OK+CH<n>=<1|0>\n
 # ---------------------------------------------------------------------------
-_SERIAL_CMD_ON  = lambda ch: bytes([0xA0, ch, 0x01, 0xA0 + ch + 0x01])
-_SERIAL_CMD_OFF = lambda ch: bytes([0xA0, ch, 0x00, 0xA0 + ch])
+_SERIAL_CMD_ON  = lambda ch: f"AT+CH{ch}=1\r\n".encode()
+_SERIAL_CMD_OFF = lambda ch: f"AT+CH{ch}=0\r\n".encode()
 
 
 class RelayController:
@@ -76,6 +77,8 @@ class RelayController:
         if not port:
             raise ValueError("RELAY_SERIAL_PORT no configurado en .env")
         ser = serial.Serial(port, config.RELAY_SERIAL_BAUD, timeout=1)
+        time.sleep(2)  # espera inicialización CP2102
+        ser.reset_input_buffer()
         self._device = ser
         self._connected = True
         logger.info("Relé Serial conectado — puerto %s @ %d baud", port, config.RELAY_SERIAL_BAUD)
