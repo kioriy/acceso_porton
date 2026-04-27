@@ -9,11 +9,12 @@ load_dotenv()
 # --- Servidor HTTP ---
 SERVER_HOST = os.getenv("SERVER_HOST", "0.0.0.0")
 SERVER_PORT = int(os.getenv("SERVER_PORT", "8765"))
+SERVER_IP   = os.getenv("SERVER_IP", "127.0.0.1")  # IP local del equipo (para la PWA)
 API_SECRET  = os.getenv("API_SECRET", "")   # Si se define, se valida en el header X-Api-Key
 
 # TLS — dejar vacío para HTTP plano, o apuntar a los archivos generados por mkcert
-SSL_CERTFILE = os.getenv("SSL_CERTFILE", "")   # ej: localhost+1.pem
-SSL_KEYFILE  = os.getenv("SSL_KEYFILE",  "")   # ej: localhost+1-key.pem
+SSL_CERTFILE = os.getenv("SSL_CERTFILE", "")   # ej: localhost+2.pem
+SSL_KEYFILE  = os.getenv("SSL_KEYFILE",  "")   # ej: localhost+2-key.pem
 
 # --- Relé DSD TECH SH-UR01A ---
 # Modo: "hid" (USB-HID) o "serial" (CH340/CP2102)

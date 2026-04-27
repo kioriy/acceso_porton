@@ -11,8 +11,12 @@ La app QR (PWA PHP+Ionic) hace POST a:
 """
 
 import sys
+import asyncio
 import logging
 import signal
+
+# Evita el error WinError 10054 de asyncio en Windows
+asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import Qt

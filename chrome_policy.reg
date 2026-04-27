@@ -1,0 +1,13 @@
+Windows Registry Editor Version 5.00
+
+; ── Google Chrome ──────────────────────────────────────────────────────────
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome\InsecurePrivateNetworkRequestsAllowedForUrls]
+"1"="https://cotomeseta.tecnola.com.mx"
+
+; ── Microsoft Edge ─────────────────────────────────────────────────────────
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge\InsecurePrivateNetworkRequestsAllowedForUrls]
+"1"="https://cotomeseta.tecnola.com.mx"
